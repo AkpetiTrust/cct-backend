@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MessagesController;
+use App\Http\Controllers\StaffController;
+use App\Http\Controllers\StudentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,13 +19,25 @@ use App\Http\Controllers\MessagesController;
 */
 
 Route::post("/login", [AuthController::class, "login"]);
-Route::post("/message", [MessagesController::class, "post"]);
+Route::post("/message", [MessagesController::class, "store"]);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 
 Route::group(['middleware' => ['auth:sanctum', 'abilities:admin-abilities']], function () {
-    Route::get('/messages', [MessagesController::class, 'get']);
-    Route::post('/delete-message', [MessagesController::class, 'delete']);
+    Route::get('/messages', [MessagesController::class, 'index']);
+    Route::delete('/delete-message/{id}', [MessagesController::class, 'destroy']);
+
+    Route::get('/staff', [StaffController::class, 'index']);
+    Route::post('/add-staff', [StaffController::class, 'store']);
+    Route::delete('/delete-staff/{id}', [StaffController::class, 'destroy']);
+    Route::post('/edit-staff/{id}', [StaffController::class, 'update']);
+
+    Route::get('/students', [StudentController::class, 'index']);
+    Route::post('/add-student', [StudentController::class, 'store']);
+    Route::delete('/delete-student/{id}', [StudentController::class, 'destroy']);
+    Route::post('/edit-student/{id}', [StudentController::class, 'update']);
+
+
 });

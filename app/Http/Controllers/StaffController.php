@@ -8,14 +8,16 @@ use Illuminate\Support\Str;
 
 class StaffController extends Controller
 {
-    public function add(Request $request){
+    public function store(Request $request){
+        $request->validate([
+            "email" => "unique:staff"
+        ]);
+
         $name = $request->name;
         $email = $request->email;
-        $staff_id = Str::random(10);
         Staff::create([
             "name" => $name,
             "email" => $email,
-            "staff_id" => $staff_id,
             "is_admin" => false,
         ]);
 
@@ -24,23 +26,32 @@ class StaffController extends Controller
         ]);
     }
 
-    public function get(){
+    public function index(){
         $staff = Staff::all();
         return response()->json([
             "response" => $staff
         ]);
     }
 
-    public function delete(Request $request){
-        Staff::where("id", $request->id)->delete();
+    public function destroy($id){
+        Staff::where("id", $id)->delete();
         return response()->json([
             "response" => "Staff deleted successfully",
         ]);
     }
 
-    public function edit(Request $request){
-        $newStaff = json_decode($request->newStaff);
-        Staff::where("id", $request->id)->update($newStaff);
+    public function update(Request $request, $id){
+        $name = $request->name;
+        $email = $request->email;
+        $newStaff = [
+            "name" => $name,
+            "email" => $email,
+        ];
+        Staff::where("id", $id)->update($newStaff);
+
+        return response()->json([
+            "response" => "Staff edited successfully",
+        ]);
     }
 
 }

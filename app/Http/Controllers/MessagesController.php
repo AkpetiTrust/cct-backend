@@ -7,14 +7,14 @@ use Illuminate\Http\Request;
 
 class MessagesController extends Controller
 {
-    public function get(){
+    public function index(){
         $messages = Message::orderBy("created_at", "desc")->get();
         return response()->json([
             "response" => $messages,
         ]);
     }
     
-    public function post(Request $request){
+    public function store(Request $request){
         Message::create([
             "name" => $request->name,
             "email" => $request->email,
@@ -26,8 +26,14 @@ class MessagesController extends Controller
         ]);
     }
 
-    public function delete(Request $request){
-        Message::where("id", $request->id)->delete();
+    public function destroy($id){
+        try{
+            Message::findOrFail($id)->delete();
+        }catch(\Exception $e){
+            return response()->json([
+                "response" => "Something went wrong",
+            ], 500);
+        }
         return response()->json([
             "response" => "Message deleted successfully",
         ]);

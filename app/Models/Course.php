@@ -9,4 +9,12 @@ class Course extends Model
 {
     use HasFactory;
     protected $guarded = [];
+
+    public function faculties(){
+        return $this->belongsToMany(Staff::class);
+    }
+
+    public function students(){
+        return $this->belongsToMany(Student::class);
+    }
 }
