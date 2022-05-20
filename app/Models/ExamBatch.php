@@ -9,4 +9,8 @@ class ExamBatch extends Model
 {
     use HasFactory;
     protected $guarded = [];
+
+    public function students(){
+        return $this->belongsToMany(Student::class);
+    }
 }

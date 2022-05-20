@@ -19,25 +19,14 @@ use App\Http\Controllers\StudentController;
 */
 
 Route::post("/login", [AuthController::class, "login"]);
-Route::post("/message", [MessagesController::class, "store"]);
+Route::post("/messages", [MessagesController::class, "store"]);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 
 Route::group(['middleware' => ['auth:sanctum', 'abilities:admin-abilities']], function () {
-    Route::get('/messages', [MessagesController::class, 'index']);
-    Route::delete('/delete-message/{id}', [MessagesController::class, 'destroy']);
-
-    Route::get('/staff', [StaffController::class, 'index']);
-    Route::post('/add-staff', [StaffController::class, 'store']);
-    Route::delete('/delete-staff/{id}', [StaffController::class, 'destroy']);
-    Route::post('/edit-staff/{id}', [StaffController::class, 'update']);
-
-    Route::get('/students', [StudentController::class, 'index']);
-    Route::post('/add-student', [StudentController::class, 'store']);
-    Route::delete('/delete-student/{id}', [StudentController::class, 'destroy']);
-    Route::post('/edit-student/{id}', [StudentController::class, 'update']);
-
-
+    Route::resource('messages', MessagesController::class)->only(['index', 'destroy']);
+    Route::resource('staff', StaffController::class)->except(['create', 'show', 'edit']);
+    Route::resource('students', StudentController::class)->except(['create', 'show', 'edit']);
 });
