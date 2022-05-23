@@ -38,4 +38,12 @@ class MessagesController extends Controller
             "response" => "Message deleted successfully",
         ]);
     }
+
+    public function deleteMessages(Request $request){
+        $messageIds = json_decode($request->ids);
+        Message::whereIn("id", $messageIds)->delete();
+        return response()->json([
+            "response" => "Messages deleted successfully",
+        ]);
+    }
 }

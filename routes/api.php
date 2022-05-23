@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\ExamBatchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 Route::group(['middleware' => ['auth:sanctum', 'abilities:admin-abilities']], function () {
     Route::resource('messages', MessagesController::class)->only(['index', 'destroy']);
+    Route::post('delete-messages', [MessagesController::class, "deleteMessages"]);
     Route::resource('staff', StaffController::class)->except(['create', 'show', 'edit']);
     Route::resource('students', StudentController::class)->except(['create', 'show', 'edit']);
+});
+
+Route::group(['middleware' => ['auth:sanctum', 'abilities:staff-abilities']], function () {
+    Route::post("/add-questions/{id}", [ExamBatchController::class, "addQuestions"]);
 });

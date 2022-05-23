@@ -15,14 +15,15 @@ class StaffController extends Controller
 
         $name = $request->name;
         $email = $request->email;
-        Staff::create([
+        $newStaff = Staff::create([
             "name" => $name,
             "email" => $email,
             "is_admin" => false,
         ]);
 
         return response()->json([
-            "response" => "Staff added successfully",
+            "message" => "Staff added successfully",
+            "response" => $newStaff
         ]);
     }
 
