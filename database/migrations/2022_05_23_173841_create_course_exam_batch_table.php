@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateExamBatchesTable extends Migration
+class CreateCourseExamBatchTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,11 @@ class CreateExamBatchesTable extends Migration
      */
     public function up()
     {
-        Schema::create('exam_batches', function (Blueprint $table) {
+        Schema::create('course_exam_batch', function (Blueprint $table) {
             $table->id();
-            $table->integer("faculty_id");
             $table->integer("course_id");
-            $table->string("questions_json")->nullable();
-            $table->datetime("time");
+            $table->integer("exam_batch_id");
             $table->timestamps();
-            $table->integer("duration_in_minutes")->nullable();
         });
     }
 
@@ -31,6 +28,6 @@ class CreateExamBatchesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('exam_batches');
+        Schema::dropIfExists('course_exam_batch');
     }
 }

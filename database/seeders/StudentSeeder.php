@@ -19,7 +19,6 @@ class StudentSeeder extends Seeder
         \App\Models\Student::create([
             'name' => Str::random(10),
             'email' => Str::random(10),
-            'registration_number' => 'akpetitrust@gmail.com',
             'password' => Hash::make('password'),
         ]);
     }

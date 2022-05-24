@@ -20,7 +20,6 @@ class StaffSeeder extends Seeder
         \App\Models\Staff::create([
             'name' => Str::random(10),
             'email' => Str::random(10),
-            'staff_id' => 'akpetitrust@gmail.com',
             'password' => Hash::make('password'),
             'is_admin' => true,
         ]);
@@ -28,7 +27,6 @@ class StaffSeeder extends Seeder
         \App\Models\Staff::create([
             'name' => Str::random(10),
             'email' => Str::random(10),
-            'staff_id' => 'notadmin',
             'password' => Hash::make('password'),
             'is_admin' => false,
         ]);

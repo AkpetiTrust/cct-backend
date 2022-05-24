@@ -17,4 +17,8 @@ class Course extends Model
     public function students(){
         return $this->belongsToMany(Student::class);
     }
+
+    public function batches(){
+        return $this->hasMany(ExamBatch::class);
+    }
 }

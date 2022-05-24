@@ -91,5 +91,11 @@ class ExamBatchController extends Controller
         ]);
     }
 
+    public function addDuration(Request $request, $id){
+        ExamBatch::where("id", $id)->update([
+            "duration_in_minutes" => $request->duration_in_minutes,
+        ]);
+    }
+
 
 }

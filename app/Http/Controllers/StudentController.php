@@ -9,6 +9,10 @@ use Illuminate\Support\Str;
 class StudentController extends Controller
 {
     public function store(Request $request){
+        $request->validate([
+            "email" => "unique:students"
+        ]);
+
         $name = $request->name;
         $email = $request->email;
         $courses = json_decode($request->courses);
@@ -17,16 +21,19 @@ class StudentController extends Controller
             "email" => $email,
         ]);
 
-        // Untested
         $newStudent->courses()->attach($courses);
+        $newStudent->courses;
 
         return response()->json([
-            "response" => "Student added successfully",
+            "response" => $newStudent,
         ]);
     }
 
     public function index(){
         $students = Student::all();
+        foreach ($students as $student) {
+            $student->courses;
+        }
         return response()->json([
             "response" => $students
         ]);
@@ -40,6 +47,7 @@ class StudentController extends Controller
     }
 
     public function update(Request $request, $id){
+        // Todo, validate new email coming in.
         $name = $request->name;
         $email = $request->email;
         $courses = json_decode($request->courses);
@@ -47,11 +55,13 @@ class StudentController extends Controller
             "name" => $name,
             "email" => $email,
         ];
-        Student::where("id", $id)->update($newStudent);
-        // Update courses
+        $studentToEdit = Student::find($id);
+        $studentToEdit->update($newStudent);
+        $studentToEdit->courses()->sync($courses);
+        $studentToEdit->courses;
 
         return response()->json([
-            "response" => "Student edited successfully",
+            "response" => $studentToEdit,
         ]);
     }
 
