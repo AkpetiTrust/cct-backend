@@ -27,4 +27,8 @@ class Staff extends \Illuminate\Foundation\Auth\User
             $staff->password = Hash::make("cctpassword");
         });
     }
+
+    public function batches(){
+        return $this->hasMany(ExamBatch::class, "faculty_id");
+    }
 }

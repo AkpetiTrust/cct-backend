@@ -17,11 +17,11 @@ class CreateCoursesTable extends Migration
             $table->id();
             $table->string("title")->unique();
             $table->string("category");
-            $table->string("description");
+            $table->text("description");
             $table->string("duration");
-            $table->string("prerequisites_json");
-            $table->string("advantages_json");
-            $table->string("course_outline");
+            $table->text("prerequisites_json");
+            $table->text("advantages_json");
+            $table->text("course_outline");
             $table->timestamps();
         });
     }

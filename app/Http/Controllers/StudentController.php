@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use \App\Models\Student;
+use \App\Models\Course;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class StudentController extends Controller
 {
@@ -62,6 +64,28 @@ class StudentController extends Controller
 
         return response()->json([
             "response" => $studentToEdit,
+        ]);
+    }
+
+    public function getBatches(){
+        date_default_timezone_set("Africa/Lagos");
+        $user = Auth::user();
+        $batches = $user->examBatches;
+        $response = [];
+        foreach ($batches as $batch) {
+            $time = $batch->time;
+            $courseTitle =  $batch->course->title;
+            $gracePeriodInSeconds = 2*60*60;
+            if(time() < (strtotime($time) + $gracePeriodInSeconds)){
+                array_push($response, [
+                    "time" => $time,
+                    "course" => $courseTitle,
+                    "id" => $batch->id,
+                ]);
+            }
+        }
+        return response()->json([
+            "response" => $response,
         ]);
     }
 

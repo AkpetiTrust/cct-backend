@@ -13,4 +13,9 @@ class ExamBatch extends Model
     public function students(){
         return $this->belongsToMany(Student::class);
     }
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use \App\Models\Staff;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class StaffController extends Controller
 {
@@ -52,6 +53,14 @@ class StaffController extends Controller
 
         return response()->json([
             "response" => "Staff edited successfully",
+        ]);
+    }
+
+    public function facultyBatches(){
+        $faculty = Auth::user();
+        $batches = $faculty->batches;
+        return response()->json([
+            "response" => $batches
         ]);
     }
 

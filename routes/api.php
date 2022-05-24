@@ -26,6 +26,9 @@ Route::get("/courses", [CourseController::class, "index"]);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/get-batches', [StudentController::class, 'getBatches']);
+    Route::get('/get-batch/{id}', [ExamBatchController::class, 'showBatchToStudent']);
+    Route::get('/get-exam/{id}', [ExamBatchController::class, 'getExamQuestions']);
 });
 
 Route::group(['middleware' => ['auth:sanctum', 'abilities:admin-abilities']], function () {
@@ -34,8 +37,11 @@ Route::group(['middleware' => ['auth:sanctum', 'abilities:admin-abilities']], fu
     Route::resource('staff', StaffController::class)->except(['create', 'show', 'edit']);
     Route::resource('students', StudentController::class)->except(['create', 'show', 'edit']);
     Route::resource('courses', CourseController::class)->except(['create', 'edit', 'index']);
+    Route::resource('exam-batches', ExamBatchController::class)->except(['create', 'edit', 'show']);
 });
 
 Route::group(['middleware' => ['auth:sanctum', 'abilities:staff-abilities']], function () {
     Route::post("/add-questions/{id}", [ExamBatchController::class, "addQuestions"]);
+    Route::get("/faculty-batches", [StaffController::class, "facultyBatches"]);
+    Route::resource('exam-batches', ExamBatchController::class)->only(['show']);
 });

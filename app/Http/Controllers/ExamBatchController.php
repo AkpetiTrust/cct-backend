@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ExamBatch;
 use \PhpOffice\PhpSpreadsheet\IOFactory;
+use Illuminate\Support\Facades\Auth;
 
 class ExamBatchController extends Controller
 {
@@ -27,6 +28,10 @@ class ExamBatchController extends Controller
         ]);
 
         $newExamBatch->students()->attach($students);
+
+        return response()->json([
+            "response" => "Batch created successfully"
+        ]);
     }
     
     public function update(Request $request, $id)
@@ -75,6 +80,7 @@ class ExamBatchController extends Controller
                 "question" => $question,
                 "options" => $options,
                 "answer" => $lettersToIds[strtoupper(trim($answer))],
+                "id" => $row -1
             ]);
 
             $row++;
@@ -88,12 +94,85 @@ class ExamBatchController extends Controller
 
         return response()->json([
             "response" => "Questions uploaded successfully",
+            "questions" => $questions,
         ]);
     }
 
     public function addDuration(Request $request, $id){
         ExamBatch::where("id", $id)->update([
             "duration_in_minutes" => $request->duration_in_minutes,
+        ]);
+    }
+
+    public function show($id){
+        $examBatch = ExamBatch::find($id);
+        $examBatch->students;
+        $examBatch->course;
+
+        return response()->json([
+            "response" => $examBatch
+        ]);
+    }
+
+
+    public function showBatchToStudent($id){
+        $examBatch =  ExamBatch::find($id);
+        $time = $examBatch->time;
+        $duration = $examBatch->duration_in_minutes;
+        $questionNumber = json_decode($examBatch->questions_json) !== null ? count(json_decode($examBatch->questions_json)) : 0;
+        $course = $examBatch->course->title;
+
+        return response()->json([
+            "response" => [
+                "time" => $time,
+                "duration" => $duration,
+                "questionNumber" => $questionNumber,
+                "course" => $course
+            ]
+            ]);
+    }
+
+
+    public function getExamQuestions($id){
+        date_default_timezone_set("Africa/Lagos");
+        $user = Auth::user();
+        $examBatch =  ExamBatch::find($id);
+        $gracePeriodInSeconds = 2*60*60;
+        if($examBatch->students()->find($user->id)){
+            $currentTimeInSeconds = time();
+            $examTimeInSeconds = strtotime($examBatch->time);
+            
+            if($currentTimeInSeconds > ($examTimeInSeconds + $gracePeriodInSeconds)){
+                return response()->json([
+                    "error" => "Sorry but you've missed the exam"
+                ]);
+            }else if($currentTimeInSeconds < $examTimeInSeconds){
+                return response()->json([
+                    "error" => "It's not time for the exam yet"
+                ]);
+            }
+
+            $questions = json_decode($examBatch->questions_json);
+            $questionsToShow = [];
+            foreach ($questions as $question) {
+                $questionToShow = [
+                    "question" => $question->question,
+                    "options" => $question->options,
+                    "id" => $question->id
+                ];
+
+                array_push($questionsToShow, $questionToShow);
+            }
+
+            return response()->json([
+                "questions" => $questionsToShow,
+                "course" => $examBatch->course->title
+            ]);
+
+        }
+
+        return response()->json([
+            "error" => "You aren't batched for this exam"
         ]);
     }
 

@@ -31,4 +31,8 @@ class Student extends \Illuminate\Foundation\Auth\User
         return $this->belongsToMany(Course::class);
     }
 
+    public function examBatches(){
+        return $this->belongsToMany(ExamBatch::class);
+    }
+
 }
