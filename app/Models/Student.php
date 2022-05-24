@@ -10,12 +10,13 @@ use Illuminate\Support\Facades\DB;
 
 class Student extends \Illuminate\Foundation\Auth\User
 {
-    use HasApiTokens, HasFactory;
+    use HasApiTokens, HasFactory, GetNextSequenceValue;
     protected $guarded = [];
     protected static function booted(){
         static::creating(function ($student) {
-            $statement = DB::select("SHOW TABLE STATUS LIKE 'students'");
-            $newStudentId = $statement[0]->Auto_increment;
+            // $statement = DB::select("SHOW TABLE STATUS LIKE 'students'");
+            // $newStudentId = $statement[0]->Auto_increment;
+            $newStudentId = self::getNextSequenceValue();
             $idLength = strlen(strval($newStudentId));
             if($idLength === 1){
                 $newStudentId = "00" . $newStudentId;

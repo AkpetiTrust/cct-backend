@@ -10,13 +10,14 @@ use Illuminate\Support\Facades\DB;
 
 class Staff extends \Illuminate\Foundation\Auth\User
 {
-    use HasApiTokens, HasFactory;
+    use HasApiTokens, HasFactory, GetNextSequenceValue;
     protected $guarded = [];
     protected static function booted()
     {
         static::creating(function ($staff) {
-            $statement = DB::select("SHOW TABLE STATUS LIKE 'staff'");
-            $newStaffId = $statement[0]->Auto_increment;
+            // $statement = DB::select("SHOW TABLE STATUS LIKE 'staff'");
+            // $newStaffId = $statement[0]->Auto_increment;
+            $newStaffId = self::getNextSequenceValue();
             $idLength = strlen(strval($newStaffId));
             if($idLength === 1){
                 $newStaffId = "00" . $newStaffId;
