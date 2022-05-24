@@ -17,6 +17,7 @@ class CreateResultsTable extends Migration
             $table->id();
             $table->integer("student_id");
             $table->string("result_json");
+            $table->integer("batch_id");
             $table->timestamps();
         });
     }

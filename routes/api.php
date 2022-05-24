@@ -29,6 +29,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/get-batches', [StudentController::class, 'getBatches']);
     Route::get('/get-batch/{id}', [ExamBatchController::class, 'showBatchToStudent']);
     Route::get('/get-exam/{id}', [ExamBatchController::class, 'getExamQuestions']);
+    Route::post('/submit-questions/{id}', [ExamBatchController::class, 'submitQuestions']);
 });
 
 Route::group(['middleware' => ['auth:sanctum', 'abilities:admin-abilities']], function () {

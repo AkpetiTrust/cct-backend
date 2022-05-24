@@ -75,7 +75,7 @@ class StudentController extends Controller
         foreach ($batches as $batch) {
             $time = $batch->time;
             $courseTitle =  $batch->course->title;
-            $gracePeriodInSeconds = 2*60*60;
+            $gracePeriodInSeconds = 10*60*60;
             if(time() < (strtotime($time) + $gracePeriodInSeconds)){
                 array_push($response, [
                     "time" => $time,

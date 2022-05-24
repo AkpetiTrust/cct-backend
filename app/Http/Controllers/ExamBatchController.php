@@ -137,7 +137,7 @@ class ExamBatchController extends Controller
         date_default_timezone_set("Africa/Lagos");
         $user = Auth::user();
         $examBatch =  ExamBatch::find($id);
-        $gracePeriodInSeconds = 2*60*60;
+        $gracePeriodInSeconds = 10*60*60;
         if($examBatch->students()->find($user->id)){
             $currentTimeInSeconds = time();
             $examTimeInSeconds = strtotime($examBatch->time);
@@ -176,5 +176,45 @@ class ExamBatchController extends Controller
         ]);
     }
 
+
+    public function submitQuestions(Request $request, $id){
+        date_default_timezone_set("Africa/Lagos");
+        $user = Auth::user();
+        $examBatch =  ExamBatch::find($id);
+        $gracePeriodInSeconds = 10*60*60;
+        if($examBatch->students()->find($user->id)){
+            $currentTimeInSeconds = time();
+            $examTimeInSeconds = strtotime($examBatch->time);
+            
+            if($currentTimeInSeconds > ($examTimeInSeconds + $gracePeriodInSeconds)){
+                return response()->json([
+                    "error" => "Sorry but you've missed the exam"
+                ]);
+            }else if($currentTimeInSeconds < $examTimeInSeconds){
+                return response()->json([
+                    "error" => "It's not time for the exam yet"
+                ]);
+            }
+
+            $studentAnswers = json_decode($request->answers);
+            $actualAnswers = [];
+            $questions = json_decode($examBatch->questions_json);
+            foreach ($questions as $question ) {
+                array_push($actualAnswers, $question->answer);
+            }
+            $result_json = json_encode([
+                "studentAnswers" => $studentAnswers,
+                "actualAnswers" => $actualAnswers,
+            ]);
+
+
+            return $result_json;
+
+        }
+
+        return response()->json([
+            "error" => "You aren't batched for this exam"
+        ]);
+    }
 
 }
